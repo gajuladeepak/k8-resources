@@ -1,0 +1,19 @@
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ebs-static
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 20Gi
+  csi:
+    driver: ebs.csi.aws.com
+    fsType: ext4
+    volumeHandle: vol-03c604538dd7d2f41 #should be changed
+
+
+
+#as we created disk 20gb
+#it is to create a equilant object in kubernetes is persisitant volume
