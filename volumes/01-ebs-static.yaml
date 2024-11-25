@@ -27,6 +27,38 @@ spec:
     requests:
       storage: 5Gi
 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts: #docker run -v hostpath:containrpath
+    - name: persistent-storage
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: ebs-static
+    persistentVolumeClaim:
+      claimName: ebs-claim
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  type: LoadBalancer
+  selector:
+    purpose: ebs-static
+  ports:
+  - name: nginx-svc-port
+    protocol: TCP
+    port: 80 # service port
+    targetPort: 80 # container port
+
 
 
 #as we created disk 20gb
