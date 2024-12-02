@@ -38,7 +38,7 @@ spec:
   - name: nginx
     image: nginx
     volumeMounts: #docker run -v hostpath:containrpath
-    - name: efs-static
+    - name: expense-efs
       mountPath: /usr/share/nginx/html   #continer
   volumes:
   - name: expense-efs         #from where does this volume come from
