@@ -26,3 +26,41 @@ spec:
   resources:
     requests:
       storage: 5Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: efs-static
+  labels:
+    purpose: efs-static 
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts: #docker run -v hostpath:containrpath
+    - name: ebs-static
+      mountPath: /usr/share/nginx/html   #continer
+  volumes:
+  - name: expense-efs         #from where does this volume come from
+    persistentVolumeClaim:   #this volume comes fom PVC
+      claimName: expense-efs
+
+#what we are doing here is accessing EBS volumes in this path /usr/share/nginx/html  
+
+---
+#accessing pod using services
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  type: LoadBalancer
+  selector:
+    purpose: efs-static
+  ports:
+  - name: nginx-svc-port
+    protocol: TCP
+    port: 80 # service port
+    targetPort: 80 # container port
+    nodePort: 30007
+
