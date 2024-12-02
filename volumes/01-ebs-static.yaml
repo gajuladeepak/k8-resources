@@ -31,7 +31,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: app
+  name: ebs-static
+  labels:
+    purpose: ebs-static 
 spec:
   nodeSelector:
     topology.kubernetes.io/zone: us-east-1d
@@ -40,13 +42,16 @@ spec:
     image: nginx
     volumeMounts: #docker run -v hostpath:containrpath
     - name: ebs-static
-      mountPath: /usr/share/nginx/html
+      mountPath: /usr/share/nginx/html   #continer
   volumes:
-  - name: ebs-static
-    persistentVolumeClaim:
+  - name: ebs-static          #from where does this volume come from
+    persistentVolumeClaim:   #this volume comes fom PVC
       claimName: ebs-claim
 
+#what we are doing here is accessing EBS volumes in this path /usr/share/nginx/html  
+
 ---
+#accessing pod using services
 kind: Service
 apiVersion: v1
 metadata:
@@ -60,8 +65,13 @@ spec:
     protocol: TCP
     port: 80 # service port
     targetPort: 80 # container port
+    nodePort: 30007
 
 
 
 #as we created disk 20gb
-#it is to create a equilant object in kubernetes is persisitant volume
+#it is to create a equilant object in kubernetes is persistant volume.
+#PV is physical representation of storage it a object created in cluster representing EBS Volume.
+#PVC is something is used to request for the storage.
+#In PVC we have PV information.
+#pod is getting the storage through the PVC.

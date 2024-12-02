@@ -1,11 +1,11 @@
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolumeClaim   #This tells Kubernetes that we are creating a PersistentVolumeClaim, which is a request for storage.
 metadata:
-  name: ebs-dynamic
+  name: ebs-dynamic   #This is the name we are giving to this PersistentVolumeClaim. It's called ebs-dynamic in this case, so Kubernetes will identify it by that name.
 spec:
   storageClassName: "expense-ebs" # Empty string must be explicitly set otherwise default StorageClass will be set
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce  #means that the storage can be mounted by only one node at a time (but it can be read from and written to by that one node).                 
   resources:
     requests:
       storage: 5Gi
@@ -19,12 +19,12 @@ metadata:
     purpose: ebs-dynamic
 spec:
   nodeSelector:
-  #   topology.kubernetes.io/zone: us-east-1d
-  # containers:
+    topology.kubernetes.io/zone: us-east-1d
+  containers:
   - name: nginx
     image: nginx
     volumeMounts: #docker run -v hostpath:containrpath
-    - name: ebs-static
+    - name: ebs-dynamic #volume name
       mountPath: /usr/share/nginx/html
   volumes:
   - name: ebs-dynamic
@@ -45,3 +45,55 @@ spec:
     protocol: TCP
     port: 80 # service port
     targetPort: 80 # container port
+    nodePort: 3007
+
+
+#here we have creating a persistantvolume claim and given it to pod.
+
+# 1. PersistentVolumeClaim (PVC)
+# This part of the code is asking for storage from the cluster:
+
+# It requests 5 GB of space.
+# The storage will be provided by a specific storage class called expense-ebs.
+# It also specifies that this storage can only be used by one node at a time (ReadWriteOnce).
+# 2. Pod
+# A Pod is like a wrapper that runs containers. In this case, the Pod does the following:
+
+# It runs a container with the nginx web server inside it.
+# It makes sure that this Nginx server will serve files from the storage that we just requested (the PersistentVolumeClaim). This storage will be mounted inside the container at /usr/share/nginx/html (which is where Nginx looks for its web files).
+# The Pod is scheduled to run in a specific zone (us-east-1d), which helps to ensure it’s running in the right part of the cloud or cluster.
+# 3. Service
+# A Service is like a "door" that lets people (or other services) talk to the Nginx server running in the Pod:
+
+# It’s a LoadBalancer, which means it will create an external IP that people can use to access the server.
+# The Service will listen on port 80 (the usual port for web traffic), and it will forward that traffic to the Nginx container running inside the Pod.
+# Putting it All Together
+# First, we ask the Kubernetes system to set aside 5 GB of storage using a PersistentVolumeClaim.
+# Next, we create a Pod that runs an Nginx web server. This web server uses the storage we just requested.
+# Finally, we create a Service to make the Nginx server accessible from outside the cluster, so users can access the web server via a public IP on port 80.
+# In simple terms:
+
+# We're creating storage.
+# We're setting up a web server (Nginx) to use that storage.
+# We expose the web server to the internet through a load balancer, so users can access it.
+
+
+# Putting it All Together
+# First, we ask the Kubernetes system to set aside 5 GB of storage using a PersistentVolumeClaim.
+# Next, we create a Pod that runs an Nginx web server. This web server uses the storage we just requested.
+# Finally, we create a Service to make the Nginx server accessible from outside the cluster, so users can access the web server via a public IP on port 80.
+
+
+# In simple terms:
+
+# We're creating storage.
+# We're setting up a web server (Nginx) to use that storage.
+# We expose the web server to the internet through a load balancer, so users can access it.
+
+# This claim will then be used by other Kubernetes resources (like Pods) to actually store data. If the claim is fulfilled, a Persistent Volume (PV) will be created automatically by Kubernetes to provide that storage.
+
+
+
+
+
+

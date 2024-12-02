@@ -8,7 +8,7 @@ spec:
     image: nginx
     envFrom:
     - configMapRef:
-      name: nginx-config
+      name: nginx-config #config map file name
     # env:
     # - name: course
     #   valueFrom:  #From where you are taking the values
@@ -22,5 +22,5 @@ spec:
     #       key: duration
     
           
-          #env.name and config map key name can be different
+          #env.name and config map key name can be different or same
 

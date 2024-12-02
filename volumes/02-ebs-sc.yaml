@@ -1,7 +1,7 @@
-apiVersion: storage.k8s.io/v1
+apiVersion: storage.k8s.io/v1  #This specifies the version of the Kubernetes API being used to create the StorageClass. In this case, it's using the stable v1 version from the storage.k8s.io API group.
 kind: StorageClass
 metadata:
   name: expense-ebs
 reclaimPolicy: Retain
-provisioner: ebs.csi.aws.com
-volumeBindingMode: WaitForFirstConsumer  #storage will be created when poad is getting created
+provisioner: ebs.csi.aws.com  #ebs.csi.aws.com is the driver to use for creating EBS volumes.
+volumeBindingMode: WaitForFirstConsumer  # The storage will only be created when a pod needs it. This means Kubernetes waits to create the storage until it’s actually needed by a pod.
