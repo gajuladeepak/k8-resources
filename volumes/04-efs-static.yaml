@@ -12,7 +12,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   csi:
     driver: efs.csi.aws.com
-    volumeHandle: fs-0946a4a6c190c7df3
+    volumeHandle: fs-0fce1e3a4686291d2 #it need to be changed 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -35,7 +35,7 @@ metadata:
     purpose: efs-static
 spec:
   nodeSelector:
-    topology.kubernetes.io/zone: us-east-1b
+    topology.kubernetes.io/zone: us-east-1a
   containers:
   - name: nginx
     image: nginx
