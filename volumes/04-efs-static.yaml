@@ -35,13 +35,13 @@ metadata:
     purpose: efs-static
 spec:
   nodeSelector:
-    topology.kubernetes.io/zone: us-east-1c
+    topology.kubernetes.io/zone: us-east-1b
   containers:
   - name: nginx
     image: nginx
     volumeMounts: # docker run -v hostpath:contaierpath
     - name: expense-efs
-      mountPath: /usr/share/nginx/html
+      mountPath: /usr/share/nginx/html  #is the place inside the container where that external storage is mounted 
   volumes:
   - name: expense-efs
     persistentVolumeClaim:
